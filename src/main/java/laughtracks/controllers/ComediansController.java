@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import main.java.laughtracks.models.Comedian;
+import main.java.laughtracks.exceptions.comedian.ComedianNotfoundException;
+
 
 @RestController
 public class ComediansController {
@@ -40,6 +42,9 @@ public class ComediansController {
 
     @RequestMapping(value="/comedians/{id}")
     public ResponseEntity<Object> getComedian(@PathVariable("id") String id) {
+        if (!comedianRepo.containsKey(id)) {
+            throw new ComedianNotfoundException();
+        }
         return new ResponseEntity<>(comedianRepo.get(id), HttpStatus.OK);
     }
 
@@ -51,6 +56,9 @@ public class ComediansController {
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.PUT)
     public ResponseEntity<Object> putComedian(@PathVariable("id") String id, @RequestBody Comedian comedian) {
+        if (!comedianRepo.containsKey(id)) {
+            throw new ComedianNotfoundException();
+        }
         Comedian orgComedian = comedianRepo.get(id);
         if (comedian.getAge() != null) {
             orgComedian.setAge(comedian.getAge());
@@ -61,7 +69,7 @@ public class ComediansController {
         if (comedian.getCity() != null) {
             orgComedian.setCity(comedian.getCity());
         }
-        return new ResponseEntity<>("Comedian Updated successfully: " + orgComedian, HttpStatus.OK);
+            return new ResponseEntity<>("Comedian Updated successfully: " + orgComedian, HttpStatus.OK);
     }
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.DELETE)
