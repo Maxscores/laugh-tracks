@@ -15,5 +15,7 @@ java -jar buijava -jar build/libs/laugh-tracks-0.0.1-SNAPSHOT.jar
 Visit `localhost:8080`
 
 Endpoints:
+
 /comedians - GET, POST
+
 /comedians/{id} - GET, PUT, DELETE
