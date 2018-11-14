@@ -9,7 +9,7 @@ gradel clean build
 
 Start instance:
 ```
-java -jar buijava -jar build/libs/laugh-tracks-0.0.1-SNAPSHOT.jar
+-jar build/libs/laugh-tracks-0.0.1-SNAPSHOT.jar
 ```
 
 Visit `localhost:8080`
