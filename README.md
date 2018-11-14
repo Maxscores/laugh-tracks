@@ -1,4 +1,25 @@
 # Laugh Tracks w/ Spring Boot
 For practice, building the laughtracks assignment for the Turing Backend program
 using Java Spring Boot framework. Here's the assignment: https://github.com/turingschool-projects/LaughTracks
+<<<<<<< HEAD
     
+=======
+
+Build project with:
+```
+gradel clean build
+```
+
+Start instance:
+```
+-jar build/libs/laugh-tracks-0.0.1-SNAPSHOT.jar
+```
+
+Visit `localhost:8080`
+
+Endpoints:
+
+/comedians - GET, POST
+
+/comedians/{id} - GET, PUT, DELETE
+>>>>>>> 42eabbacc7e33d26c1144247630a6279f6863938
