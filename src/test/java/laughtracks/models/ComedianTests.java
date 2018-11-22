@@ -6,9 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import main.java.laughtracks.models.Comedian;
-import test.java.laughtracks.controllers.TestTemplate;
-
+import laughtracks.models.Comedian;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

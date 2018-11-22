@@ -4,24 +4,41 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 
-import main.java.laughtracks.models.Comedian;
+import laughtracks.models.Comedian;
 import test.java.laughtracks.controllers.TestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 public class ComediansControllerTest extends TestTemplate {
+    @Autowired
+    private ComedianRepository comedianRepository;
+
     @Override
     @Before
     public void setUp() {
         super.setUp();
+        Comedian jerrySeinfeld = new Comedian();
+        jerrySeinfeld.setName("Jerry Seinfeld");
+        jerrySeinfeld.setAge(45);
+        jerrySeinfeld.setCity("New York City");
+        comedianRepository.save(jerrySeinfeld);
+
+        Comedian azizAnsari = new Comedian();
+        azizAnsari.setName("Aziz Ansari");
+        azizAnsari.setAge(31);
+        azizAnsari.setCity("New York City");
+        comedianRepository.save(azizAnsari);
     }
 
     @Test
-    public void getComdeiansList() throws Exception {
+    public void getComediansList() throws Exception {
         String endpoint = "/comedians";
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(endpoint).accept(MediaType.APPLICATION_JSON_VALUE);
 
@@ -50,14 +67,14 @@ public class ComediansControllerTest extends TestTemplate {
 
         String content = result.getResponse().getContentAsString();
         Comedian comedianOne = super.mapFromJson(content, Comedian.class);
-        Assert.assertEquals("1", comedianOne.getId());
+        Integer expectedId = 1;
+        Assert.assertEquals(expectedId, comedianOne.getId());
     }
 
     @Test
     public void postComedian() throws Exception {
         String endpoint = "/comedians";
         Comedian newComedian = new Comedian();
-        newComedian.setId("3");
         newComedian.setName("Jimmy Chang");
         newComedian.setAge(37);
         newComedian.setCity("Boston");

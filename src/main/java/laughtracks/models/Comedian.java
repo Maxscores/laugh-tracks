@@ -1,17 +1,26 @@
-package main.java.laughtracks.models;
+package laughtracks.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Comedian {
-    private String id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer id;
+
     private String name;
     private Integer age;
     private String city;
 
 // need to set getter methods in order for ResponseEntity to return the values
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

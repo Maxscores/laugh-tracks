@@ -3,7 +3,9 @@ package laughtracks;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpEntity;
@@ -17,71 +19,65 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import main.java.laughtracks.models.Comedian;
+import laughtracks.models.Comedian;
 import main.java.laughtracks.exceptions.comedian.ComedianNotfoundException;
 
 
 @RestController
 public class ComediansController {
-    private static Map<String, Comedian> comedianRepo = new HashMap<>();
+    @Autowired
+    private ComedianRepository comedianRepository;
     private RestTemplate restTemplate = new RestTemplate();
-
-    static {
-        Comedian jerrySeinfeld = new Comedian();
-        jerrySeinfeld.setId("1");
-        jerrySeinfeld.setName("Jerry Seinfeld");
-        jerrySeinfeld.setAge(45);
-        jerrySeinfeld.setCity("New York City");
-        comedianRepo.put(jerrySeinfeld.getId(), jerrySeinfeld);
-
-        Comedian azizAnsari = new Comedian();
-        azizAnsari.setId("2");
-        azizAnsari.setName("Aziz Ansari");
-        azizAnsari.setAge(31);
-        azizAnsari.setCity("New York City");
-        comedianRepo.put(azizAnsari.getId(), azizAnsari);
-    }
 
     @RequestMapping(value="/comedians")
     public ResponseEntity<Object> getComedians() {
-        return new ResponseEntity<>(comedianRepo.values(), HttpStatus.OK);
+        return new ResponseEntity<>(comedianRepository.findAll(), HttpStatus.OK);
     }
 
     @RequestMapping(value="/comedians/{id}")
-    public ResponseEntity<Object> getComedian(@PathVariable("id") String id) {
-        if (!comedianRepo.containsKey(id)) {
+    public ResponseEntity<Object> getComedian(@PathVariable("id") Integer id) {
+        Optional<Comedian> optionalComedian = comedianRepository.findById(id);
+        if (!optionalComedian.isPresent()) {
             throw new ComedianNotfoundException();
         }
-        return new ResponseEntity<>(comedianRepo.get(id), HttpStatus.OK);
+        Comedian comedian = optionalComedian.get();
+        return new ResponseEntity<>(comedian, HttpStatus.OK);
     }
 
     @RequestMapping(value="/comedians", method=RequestMethod.POST)
     public ResponseEntity<Object> postComedian(@RequestBody Comedian comedian) {
-        comedianRepo.put(comedian.getId(), comedian);
+        comedianRepository.save(comedian);
         return new ResponseEntity<>("Comedian added successfully", HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.PUT)
-    public ResponseEntity<Object> putComedian(@PathVariable("id") String id, @RequestBody Comedian comedian) {
-        if (!comedianRepo.containsKey(id)) {
+    public ResponseEntity<Object> putComedian(@PathVariable("id") Integer id, @RequestBody Comedian comedian) {
+        Optional<Comedian> optionalComedian = comedianRepository.findById(id);
+        if (!optionalComedian.isPresent()) {
             throw new ComedianNotfoundException();
         }
-        Comedian orgComedian = comedianRepo.get(id);
+        Comedian orginalComedian = optionalComedian.get();
         if (comedian.getAge() != null) {
-            orgComedian.setAge(comedian.getAge());
+            orginalComedian.setAge(comedian.getAge());
         }
         if (comedian.getName() != null) {
-            orgComedian.setName(comedian.getName());
+            orginalComedian.setName(comedian.getName());
         }
         if (comedian.getCity() != null) {
-            orgComedian.setCity(comedian.getCity());
+            orginalComedian.setCity(comedian.getCity());
         }
-            return new ResponseEntity<>("Comedian updated successfully", HttpStatus.OK);
+        comedianRepository.save(orginalComedian);
+        return new ResponseEntity<>("Comedian updated successfully", HttpStatus.OK);
     }
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteComedian(@PathVariable("id") String id) {
-        comedianRepo.remove(id);
+    public ResponseEntity<Object> deleteComedian(@PathVariable("id") Integer id) {
+        Optional<Comedian> optionalComedian = comedianRepository.findById(id);
+        if (!optionalComedian.isPresent()) {
+            throw new ComedianNotfoundException();
+        }
+        Comedian comedian = optionalComedian.get();
+        comedianRepository.delete(comedian);
         return new ResponseEntity<>("Comedian removed successfully", HttpStatus.OK);
     }
 
