@@ -58,7 +58,7 @@ public class ComediansController {
     @RequestMapping(value="/comedians", method=RequestMethod.POST)
     public ResponseEntity<Object> postComedian(@RequestBody Comedian comedian) {
         comedianRepo.put(comedian.getId(), comedian);
-        return new ResponseEntity<>("Comedian added successfully: " + comedian, HttpStatus.CREATED);
+        return new ResponseEntity<>("Comedian added successfully", HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.PUT)
@@ -76,7 +76,7 @@ public class ComediansController {
         if (comedian.getCity() != null) {
             orgComedian.setCity(comedian.getCity());
         }
-            return new ResponseEntity<>("Comedian Updated successfully: " + orgComedian, HttpStatus.OK);
+            return new ResponseEntity<>("Comedian updated successfully", HttpStatus.OK);
     }
 
     @RequestMapping(value="/comedians/{id}", method=RequestMethod.DELETE)

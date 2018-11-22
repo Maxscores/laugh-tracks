@@ -2,6 +2,7 @@ package laughtracks;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -32,7 +33,7 @@ public class ComediansControllerTest extends TestTemplate {
 
         String content = result.getResponse().getContentAsString();
         Comedian[] comedianList = super.mapFromJson(content, Comedian[].class);
-        Assert.assertEquals(2, comedianList.length);
+        Assert.assertTrue(comedianList.length > 1);
     }
 
     @Test
@@ -50,8 +51,54 @@ public class ComediansControllerTest extends TestTemplate {
         String content = result.getResponse().getContentAsString();
         Comedian comedianOne = super.mapFromJson(content, Comedian.class);
         Assert.assertEquals("1", comedianOne.getId());
-        Assert.assertEquals("Jerry Seinfeld", comedianOne.getName());
-        Assert.assertEquals("New York City", comedianOne.getCity());
+    }
 
+    @Test
+    public void postComedian() throws Exception {
+        String endpoint = "/comedians";
+        Comedian newComedian = new Comedian();
+        newComedian.setId("3");
+        newComedian.setName("Jimmy Chang");
+        newComedian.setAge(37);
+        newComedian.setCity("Boston");
+
+        String inputJson = super.mapToJson(newComedian);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(endpoint);
+        request.contentType(MediaType.APPLICATION_JSON_VALUE);
+        request.content(inputJson);
+
+        ResultActions resultActions = mvc.perform(request);
+        MvcResult result = resultActions.andReturn();
+
+        Integer status = result.getResponse().getStatus();
+        Integer createdStatus = 201;
+        Assert.assertEquals(createdStatus, status);
+
+        String content = result.getResponse().getContentAsString();
+        Assert.assertEquals("Comedian added successfully", content);
+    }
+
+    @Test
+    public void putComedian() throws Exception {
+        String endpoint = "/comedians/1";
+        Comedian updatedComedian = new Comedian();
+        updatedComedian.setName("Gerald Seinfeld");
+        updatedComedian.setAge(48);
+        updatedComedian.setCity("Manhattan");
+
+        String inputJson = super.mapToJson(updatedComedian);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(endpoint);
+        request.contentType(MediaType.APPLICATION_JSON_VALUE);
+        request.content(inputJson);
+
+        ResultActions resultActions = mvc.perform(request);
+        MvcResult result = resultActions.andReturn();
+
+        Integer status = result.getResponse().getStatus();
+        Integer okStatus = 200;
+        Assert.assertEquals(okStatus, status);
+
+        String content = result.getResponse().getContentAsString();
+        Assert.assertEquals("Comedian updated successfully", content);
     }
 }
