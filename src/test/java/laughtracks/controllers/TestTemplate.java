@@ -41,9 +41,4 @@ public abstract class TestTemplate {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, clazz);
     }
-
-    @Test
-    public void testCanInitializeComedians() {
-
-    }
 }
